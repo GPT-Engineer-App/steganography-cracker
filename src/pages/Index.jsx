@@ -6,10 +6,12 @@ import { useState } from "react";
 const Index = () => {
   const toast = useToast();
   const [decodedImageUrl, setDecodedImageUrl] = useState("");
+  const [previewImageUrl, setPreviewImageUrl] = useState("");
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
+      setPreviewImageUrl(URL.createObjectURL(file));
       const formData = new FormData();
       formData.append("file", file);
 
@@ -69,6 +71,7 @@ const Index = () => {
         <Button leftIcon={<FaEye />} colorScheme="blue" onClick={handleDecode} isDisabled={!decodedImageUrl}>
           Decode Image
         </Button>
+        {previewImageUrl && <Image src={previewImageUrl} alt="Preview Image" />}
         <Image src={decodedImageUrl || "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MDcxMzJ8MHwxfHNlYXJjaHwxfHxkZWNvZGVkJTIwaW1hZ2UlMjBkaXNwbGF5fGVufDB8fHx8MTcxMzkyNjk0NXww&ixlib=rb-4.0.3&q=80&w=1080"} alt="Decoded Image" />
       </VStack>
     </Container>
