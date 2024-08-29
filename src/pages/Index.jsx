@@ -1,78 +1,69 @@
-import { Box, Button, Container, Heading, Input, Text, VStack, Image, useToast } from "@chakra-ui/react";
-import { FaUpload, FaEye } from "react-icons/fa";
+import { Box, Container, Heading, Text, VStack, SimpleGrid, useColorModeValue, Icon, Link } from "@chakra-ui/react";
+import { FaGlobe, FaNewspaper, FaTwitter, FaLock, FaCalendarAlt } from "react-icons/fa";
+import { Link as RouterLink } from "react-router-dom";
+import { motion } from "framer-motion";
 
-import { useState } from "react";
+const FeatureBox = ({ icon, title, description }) => {
+  const bg = useColorModeValue("gray.100", "gray.700");
+  return (
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <Box p={5} shadow="md" borderWidth="1px" bg={bg} borderRadius="lg">
+        <Icon as={icon} w={10} h={10} mb={4} />
+        <Heading fontSize="xl" mb={2}>{title}</Heading>
+        <Text>{description}</Text>
+      </Box>
+    </motion.div>
+  );
+};
 
 const Index = () => {
-  const toast = useToast();
-  const [decodedImageUrl, setDecodedImageUrl] = useState("");
-  const [previewImageUrl, setPreviewImageUrl] = useState("");
-
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setPreviewImageUrl(URL.createObjectURL(file));
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const response = await fetch("https://colab.research.google.com/drive/1_-k_0NpGouhHurBTZyF-jiTruUHJ2K3Y?usp=sharing", {
-          method: "POST",
-          body: formData,
-        });
-        if (!response.ok) {
-          throw new Error("Failed to upload image");
-        }
-        const data = await response.json();
-        setDecodedImageUrl(data.decodedImageUrl);
-
-        toast({
-          title: "File Uploaded and Processed",
-          description: "Your file has been uploaded and processed. The decoded image is now displayed.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "There was an error processing your file.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    }
-  };
-
-  const handleDecode = () => {
-    toast({
-      title: "Decoding Image",
-      description: "We are now decoding the hidden messages in your image.",
-      status: "info",
-      duration: 5000,
-      isClosable: true,
-    });
-  };
-
   return (
-    <Container maxW="container.md" py={10}>
-      <VStack spacing={8}>
-        <Heading as="h1" size="xl">
-          Image Steganography Decoder
+    <Container maxW="container.xl" py={10}>
+      <VStack spacing={8} as="main">
+        <Heading as="h1" size="2xl" textAlign="center" mb={6}>
+          Conspiracy Theorists Hub
         </Heading>
-        <Text>Upload an image to decode hidden messages based on various steganography techniques.</Text>
-        <Box>
-          <Input type="file" accept="image/*" onChange={handleFileUpload} hidden id="file-upload" />
-          <Button leftIcon={<FaUpload />} colorScheme="teal" onClick={() => document.getElementById("file-upload").click()}>
-            Upload Image
-          </Button>
+        <Text fontSize="xl" textAlign="center" mb={10}>
+          Your one-stop destination for decoding hidden truths and exploring the unexplained
+        </Text>
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10} width="full">
+          <FeatureBox
+            icon={FaGlobe}
+            title="Trending Conspiracies"
+            description="AI-powered analysis of the latest global conspiracy trends"
+          />
+          <FeatureBox
+            icon={FaNewspaper}
+            title="Breaking News"
+            description="Real-time updates on events that shape our world"
+          />
+          <FeatureBox
+            icon={FaTwitter}
+            title="Social Media Pulse"
+            description="Track viral stories and theories across platforms"
+          />
+          <FeatureBox
+            icon={FaLock}
+            title="Steganography Decoder"
+            description="Uncover hidden messages in images"
+          />
+          <FeatureBox
+            icon={FaCalendarAlt}
+            title="Date Calculator"
+            description="Analyze time patterns and significant dates"
+          />
+        </SimpleGrid>
+        <Box mt={10}>
+          <Text fontSize="lg" fontWeight="bold" mb={4}>
+            Explore Our Tools:
+          </Text>
+          <Link as={RouterLink} to="/steganography" color="teal.500" mr={4}>
+            Steganography Decoder
+          </Link>
+          <Link as={RouterLink} to="/date-calculator" color="teal.500">
+            Date Calculator
+          </Link>
         </Box>
-        <Button leftIcon={<FaEye />} colorScheme="blue" onClick={handleDecode} isDisabled={!decodedImageUrl}>
-          Decode Image
-        </Button>
-        {previewImageUrl && <Image src={previewImageUrl} alt="Preview Image" />}
-        <Image src={decodedImageUrl || "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MDcxMzJ8MHwxfHNlYXJjaHwxfHxkZWNvZGVkJTIwaW1hZ2UlMjBkaXNwbGF5fGVufDB8fHx8MTcxMzkyNjk0NXww&ixlib=rb-4.0.3&q=80&w=1080"} alt="Decoded Image" />
       </VStack>
     </Container>
   );
